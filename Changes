@@ -1,0 +1,30 @@
+Revision history for Perl extension App::CLI::Extension
+
+1.21  Tue Jan  5 01:39:09 2010
+        - mini fix
+1.2   Sun Jan  3 22:53:02 2010
+        - add exit_value method(A::C::E::Component::RunCommand)
+1.1   Sat Dec 13 02:45:21 2009
+        - mini fix
+1.0   Sat Dec 13 02:45:21 2009
+        - add A::C::E::Component::RunMethod
+        - add A::C::E::Component::InstallCallback (before A::C::P::InstallCallback)
+0.7   Sat Dec  5 03:32:42 2009
+        - add A::C::E::Component::OriginalArgv
+        - fixed invalid pod
+0.6   Tue Dec  1 00:55:45 2009
+        - miss!
+0.5   Mon Nov 30 02:17:56 2009
+        - fixed invalid META.yml
+0.4   Sat Sep 20 01:10:45 2009
+        - fixed invalid pod
+0.3   Fri Sep 19 23:00:00 2009
+        - non use Module::Pluggable
+        - non use Class::Data::Inheritable. instead of use Class::Data::Accessor
+0.2   Thu Sep 10 23:02:00 2009
+        - fixed invalid pod
+0.1   Mon Sep 09 07:00:00 2009
+        - non use Hash::Merge
+        - Stash.pm added to the Component Module
+0.01  Sun Sep 14 21:45:10 2008
+        - original version
