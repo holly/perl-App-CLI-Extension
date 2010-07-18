@@ -8,21 +8,20 @@ App::CLI::Extension::Component::ErrorHandler - for App::CLI::Extension error mod
 
 =head1 VERSION
 
-1.2
+1.3
 
 =cut
 
 use strict;
-use base qw(Class::Data::Accessor);
+use App::CLI::Extension::Exception;
+use Error;
 
-our $VERSION  = '1.2';
+our $VERSION  = '1.3';
 
-__PACKAGE__->mk_classaccessor("errstr");
+sub throw {
 
-sub is_error {
-
-	my $self = shift;
-	return defined $self->errstr ? 1 : 0;
+	my($self, $message) = @_;
+	Error::throw App::CLI::Extension::Exception $message;
 }
 
 1;
@@ -31,7 +30,7 @@ __END__
 
 =head1 SEE ALSO
 
-L<App::CLI::Extension> L<Class::Data::Accessor>
+L<App::CLI::Extension>
 
 =head1 AUTHOR
 
@@ -42,7 +41,6 @@ Akira Horimoto
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
-Copyright (C) 2009 Akira Horimoto
+Copyright (C) 2010 Akira Horimoto
 
 =cut
-

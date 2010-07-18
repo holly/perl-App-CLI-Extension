@@ -9,6 +9,7 @@ requires(
       "Class::Data::Accessor" => 0,
       "UNIVERSAL::require"    => 0,
       "MRO::Compat"           => 0,
+      "Error"                 => 0,
      );
 use_test_base;
 auto_set_repository;

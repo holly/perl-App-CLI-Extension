@@ -8,7 +8,7 @@ App::CLI::Extension::Component::InstallCallback - for App::CLI::Extension instal
 
 =head1 VERSION
 
-1.2
+1.3
 
 =head1 SYNOPSIS
   
@@ -76,7 +76,7 @@ use strict;
 use base qw(Class::Data::Accessor);
 
 __PACKAGE__->mk_classaccessor( "_install_callback" => {} );
-our $VERSION  = '1.2';
+our $VERSION  = '1.3';
 
 sub new_callback {
 
@@ -132,7 +132,6 @@ Akira Horimoto
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
-Copyright (C) 2009 Akira Horimoto
+Copyright (C) 2010 Akira Horimoto
 
 =cut
-

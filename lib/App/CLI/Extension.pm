@@ -8,7 +8,7 @@ App::CLI::Extension - for App::CLI extension module
 
 =head1 VERSION
 
-1.21
+1.3
 
 =head1 SYNOPSIS
 
@@ -101,11 +101,11 @@ If you want the process to run before you run something in the main processing
 
 =head2 RUN
 
-Process to define the main(require)
+Process to define the main(require). however, $self->finished non-zero if not executed
 
 =head2 POSTRUN
 
-After the run method to execute
+After the run method to execute. however, $self->finished non-zero if not executed
 
 =head2 FINISH
 
@@ -115,13 +115,15 @@ At the end of all processing
 
 setup/prerun/run/postrun/finish processing to be executed if an exception occurs somewhere in the phase error
 
+$self->e is the App::CLI::Extension::Exception or Error::Simple instance is set
+
 =cut
 
 use strict;
 use base qw(App::CLI Class::Data::Accessor);
 use UNIVERSAL::require;
 
-our $VERSION    = '1.21';
+our $VERSION    = '1.3';
 our @COMPONENTS = qw(
 					Config
 					ErrorHandler
@@ -134,7 +136,7 @@ our @COMPONENTS = qw(
 __PACKAGE__->mk_classaccessor("_config"      => {});
 __PACKAGE__->mk_classaccessor("_components");
 __PACKAGE__->mk_classaccessor("_orig_argv");
-__PACKAGE__->mk_classaccessor("_plugins");
+__PACKAGE__->mk_classaccessor("_plugins" => []);
 
 =pod
 
@@ -168,7 +170,9 @@ sub dispatch {
 		my $pkg = ref($cmd);
 		# component and plugin set value
 		unshift @{"$pkg\::ISA"}, @{$class->_components};
-		unshift @{"$pkg\::ISA"}, @{$class->_plugins};
+		if (scalar(@{$class->_plugins}) != 0) {
+			unshift @{"$pkg\::ISA"}, @{$class->_plugins};
+		}
 		$cmd->config($class->_config);
 		$cmd->orig_argv($class->_orig_argv);
 	}
@@ -260,7 +264,7 @@ sub load_plugins {
 
 	my($class, @load_plugins) = @_;
 
-	my @loaded_plugins;
+	my @loaded_plugins = @{$class->_plugins};
 	foreach my $plugin(@load_plugins){
 
 		if ($plugin =~ /^\+/) {
@@ -507,6 +511,90 @@ Example:
   # program exit value is 1(ex. echo $?)
   $self->exit_value(1);
 
+=head2 finished 
+
+setup or prepare phase and 1 set, run and postrun phase will not run. default 0
+
+Example:
+
+  # MyApp/Hello.pm
+  package MyApp::Hello;
+  
+  use strict;
+  use base qw(App::CLI::Command);
+  
+  sub prerun {
+   
+      my($self, @args) = @_;
+      $self->finished(1);
+  }
+  
+  # non execute 
+  sub run {
+  
+      my($self, @args) = @_;
+      print "hello\n";
+  }
+
+=head2 throw
+
+raises an exception, fail phase transitions
+
+Example:
+
+  # MyApp/Hello.pm
+  package MyApp::Hello;
+  
+  use strict;
+  use base qw(App::CLI::Command);
+  
+  sub run {
+  
+      my($self, @args) = @_;
+      my $file = "/path/to/file";
+      open my $fh, "< $file" or $self->throw("can not open file:$file");
+      while ( my $line = <$fh> ) {
+          chomp $line;
+          print "$line\n";
+      }
+      close $fh;
+  }
+  
+  # transitions fail phase method
+  sub fail {
+  
+      my($self, @args) = @_;
+      # e is App:CLI::Extension::Exception instance
+      printf "ERROR: %s", $self->e;
+      printf "STACKTRACE: %s", $self->e->stacktrace;
+  }
+  
+  # myapp
+  #!/usr/bin/perl
+  
+  use strict;
+  use MyApp;
+  
+  MyApp->dispatch;
+  
+  # execute
+  [kurt@localhost ~] myapp hello
+  ERROR: can not open file:/path/to/file at lib/MyApp/Throw.pm line 10.
+  STACKTRACE: can not open file:/path/to/file at lib/MyApp/Throw.pm line 10
+          MyApp::Throw::run('MyApp::Throw=HASH(0x81bd6b4)') called at /usr/lib/perl5/site_perl/5.8.8/App/CLI/Extension/Component/RunCommand.pm line 36
+          App::CLI::Extension::Component::RunCommand::run_command('MyApp::Throw=HASH(0x81bd6b4)') called at /usr/lib/perl5/site_perl/5.8.8/App/CLI/Extension.pm line 177
+          App::CLI::Extension::dispatch('MyApp') called at ./myapp line 7
+
+when you run throw method, App::CLI::Extension::Exception instance that $self->e is set to.
+
+App::CLI::Extension::Exception is the Error::Simple is inherited. refer to the to documentation of C<Error>
+
+throw method without running CORE::die if you run the $self->e is the Error::Simple instance will be set
+
+=head2 e
+
+App::CLI::Extension::Exception or Error::Simple instance. There is a ready to use, fail phase only
+
 =head1 RUN PHASE METHOD
 
 =head2 setup
@@ -521,7 +609,7 @@ program last phase. By default, the exit will be executed automatically, exit if
 
 =head2 fail
 
-error phase. default errstr exit value is 255. if you want to change exit_value, see exit_value manual
+error phase. default exit value is 255. if you want to change exit_value, see exit_value manual
 
 =cut
 

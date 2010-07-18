@@ -8,14 +8,14 @@ App::CLI::Extension::Component::Config - for App::CLI::Extension config module
 
 =head1 VERSION
 
-1.2
+1.3
 
 =cut
 
 use strict;
 use base qw(Class::Data::Accessor);
 
-our $VERSION  = '1.2';
+our $VERSION  = '1.3';
 
 __PACKAGE__->mk_classaccessor( _config => {} );
 
@@ -53,7 +53,6 @@ Akira Horimoto
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
-Copyright (C) 2009 Akira Horimoto
+Copyright (C) 2010 Akira Horimoto
 
 =cut
-
