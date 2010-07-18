@@ -8,43 +8,50 @@ App::CLI::Extension::Component::RunCommand - for App::CLI::Command run_command o
 
 =head1 VERSION
 
-1.2
+1.3
 
 =cut
 
 use strict;
 use MRO::Compat;
+use Error qw(:try);
 use base qw(Class::Data::Accessor);
 
-__PACKAGE__->mk_classaccessor("exit_value");
+our $FAIL_EXIT_VALUE = 255;
+our $VERSION         = '1.3';
 
-our $DEFAULT_FAIL_EXIT_VALUE    = 255;
-our $DEFAULT_SUCCESS_EXIT_VALUE = 0;
-our $VERSION                    = '1.2';
+__PACKAGE__->mk_classaccessor("e");
+__PACKAGE__->mk_classaccessor(exit_value => 0);
+__PACKAGE__->mk_classaccessor(finished   => 0);
+
 
 sub run_command {
 
 	my($self, @argv) = @_;
 
-	eval {
+	try {
 		$self->setup(@argv);
 		$self->prerun(@argv);
-		$self->run(@argv);
-		$self->postrun(@argv);
-	};
-	if ($@) {
-		chomp(my $message = $@);
-		$self->errstr($message);
-		$self->fail(@argv);
-		if (!defined $self->exit_value) {
-			$self->exit_value($DEFAULT_FAIL_EXIT_VALUE);
+		if ($self->finished == 0) {
+			$self->run(@argv);
+			$self->postrun(@argv);
 		}
 	}
-	$self->finish(@argv);
-
-	if (!defined $self->exit_value) {
-		$self->exit_value($DEFAULT_SUCCESS_EXIT_VALUE);
+	catch App::CLI::Extension::Exception with {
+		# $self->e is App::CLI::Extension::Exception object. execute $self->throw($message)
+		$self->e(shift);
+		$self->exit_value($FAIL_EXIT_VALUE);
+		$self->fail(@argv);
 	}
+	otherwise {
+		# $self->e is Error::Simple object
+		$self->e(shift);
+		$self->exit_value($FAIL_EXIT_VALUE);
+		$self->fail(@argv);
+	}
+	finally {
+		$self->finish(@argv);
+	};
 
 	if (exists $ENV{APPCLI_NON_EXIT}) {
 		no strict "refs";  ## no critic
@@ -90,7 +97,8 @@ sub postrun {
 sub fail {
 
 	my($self, @argv) = @_;
-	warn sprintf("default fail method. errstr:%s. override fail method!!\n", $self->errstr);
+	chomp(my $message = $self->e->stringify);
+	warn sprintf("default fail method. error message:%s. override fail method!!\n", $message);
 	$self->maybe::next::method(@argv);
 }
 
@@ -100,7 +108,7 @@ __END__
 
 =head1 SEE ALSO
 
-L<App::CLI::Extension> L<MRO::Compat>
+L<App::CLI::Extension> L<Error> L<MRO::Compat>
 
 =head1 AUTHOR
 

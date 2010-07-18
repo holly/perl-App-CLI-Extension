@@ -4,14 +4,14 @@ use strict;
 use Test::More tests => 1;
 use File::Spec;
 use lib qw(t/lib);
-use MyAppFail;
+use MyAppFinish;
 
 our $RESULT;
-my @argv = ("fail");
+my @argv = ("finished", "--finished");
 
 {
     local *ARGV = \@argv;
-    MyAppFail->dispatch;
+    MyAppFinish->dispatch;
 }
 
-ok($RESULT eq "dying message");
+ok(!defined($RESULT));

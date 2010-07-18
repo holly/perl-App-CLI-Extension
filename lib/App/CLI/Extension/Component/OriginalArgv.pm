@@ -8,7 +8,7 @@ App::CLI::Extension::Component::OriginalArgv - for App::CLI::Extension original 
 
 =head1 VERSION
 
-1.2
+1.3
 
 =cut
 
@@ -17,7 +17,7 @@ use base qw(Class::Data::Accessor);
 use FindBin qw($Bin $Script);
 use File::Spec;
 
-our $VERSION  = '1.2';
+our $VERSION  = '1.3';
 
 __PACKAGE__->mk_classaccessor("_orig_argv");
 __PACKAGE__->mk_classaccessor("argv0"      => $Script);
@@ -65,7 +65,6 @@ Akira Horimoto
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
-Copyright (C) 2008 Akira Horimoto
+Copyright (C) 2010 Akira Horimoto
 
 =cut
-

@@ -6,7 +6,7 @@ use base qw(App::CLI::Command);
 sub run {
 
     my($self, @args) = @_;
-    die "dying message\n";
+    $self->throw("dying message");
 }
 1;
 
