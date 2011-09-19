@@ -1,5 +1,7 @@
 Revision history for Perl extension App::CLI::Extension
 
+1.42  Mon Sep 19 16:08:26 JST 2011
+        - update Makefile.PL
 1.41  Mon Sep 19 10:19:51 JST 2011
         - update Changes
 1.4   Mon Sep 19 10:14:08 JST 2011

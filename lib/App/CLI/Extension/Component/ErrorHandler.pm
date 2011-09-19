@@ -8,7 +8,7 @@ App::CLI::Extension::Component::ErrorHandler - for App::CLI::Extension error mod
 
 =head1 VERSION
 
-1.41
+1.42
 
 =cut
 
@@ -16,7 +16,7 @@ use strict;
 use App::CLI::Extension::Exception;
 use Error;
 
-our $VERSION  = '1.41';
+our $VERSION  = '1.42';
 
 sub throw {
 

@@ -8,7 +8,7 @@ App::CLI::Extension::Component::RunCommand - for App::CLI::Command run_command o
 
 =head1 VERSION
 
-1.41
+1.42
 
 =cut
 
@@ -18,7 +18,7 @@ use Error qw(:try);
 use base qw(Class::Accessor::Grouped);
 
 our $FAIL_EXIT_VALUE = 255;
-our $VERSION         = '1.41';
+our $VERSION         = '1.42';
 
 __PACKAGE__->mk_group_accessors(inherited => "e", "exit_value", "finished");
 __PACKAGE__->exit_value(0);
