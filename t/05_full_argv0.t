@@ -9,7 +9,7 @@ use MyApp;
 our $RESULT;
 
 {
-    local *ARGV = [ "full_argv0" ];
+    local *ARGV = [ "fullargv" ];
     MyApp->dispatch;
 }
 

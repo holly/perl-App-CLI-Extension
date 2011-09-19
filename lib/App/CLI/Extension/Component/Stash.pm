@@ -8,16 +8,18 @@ App::CLI::Extension::Component::Stash - for App::CLI::Extension stash module
 
 =head1 VERSION
 
-1.3
+1.41
 
 =cut
 
 use strict;
-use base qw(Class::Data::Accessor);
+use base qw(Class::Accessor::Grouped);
 
-our $VERSION  = '1.3';
+our $VERSION  = '1.41';
 
-__PACKAGE__->mk_classaccessor( _stash => {} );
+__PACKAGE__->mk_group_accessors("inherited" => "_stash");
+__PACKAGE__->_stash({});
+
 
 sub stash {
 
@@ -42,7 +44,7 @@ __END__
 
 =head1 SEE ALSO
 
-L<App::CLI::Extension> L<Class::Data::Accessor>
+L<App::CLI::Extension> L<Class::Accessor::Grouped>
 
 =head1 AUTHOR
 

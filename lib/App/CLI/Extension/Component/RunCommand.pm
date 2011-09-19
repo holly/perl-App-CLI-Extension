@@ -8,21 +8,21 @@ App::CLI::Extension::Component::RunCommand - for App::CLI::Command run_command o
 
 =head1 VERSION
 
-1.3
+1.41
 
 =cut
 
 use strict;
 use MRO::Compat;
 use Error qw(:try);
-use base qw(Class::Data::Accessor);
+use base qw(Class::Accessor::Grouped);
 
 our $FAIL_EXIT_VALUE = 255;
-our $VERSION         = '1.3';
+our $VERSION         = '1.41';
 
-__PACKAGE__->mk_classaccessor("e");
-__PACKAGE__->mk_classaccessor(exit_value => 0);
-__PACKAGE__->mk_classaccessor(finished   => 0);
+__PACKAGE__->mk_group_accessors(inherited => "e", "exit_value", "finished");
+__PACKAGE__->exit_value(0);
+__PACKAGE__->finished(0);
 
 
 sub run_command {

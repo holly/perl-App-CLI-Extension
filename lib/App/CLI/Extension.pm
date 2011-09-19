@@ -8,7 +8,7 @@ App::CLI::Extension - for App::CLI extension module
 
 =head1 VERSION
 
-1.3
+1.41
 
 =head1 SYNOPSIS
 
@@ -120,10 +120,10 @@ $self->e is the App::CLI::Extension::Exception or Error::Simple instance is set
 =cut
 
 use strict;
-use base qw(App::CLI Class::Data::Accessor);
+use base qw(App::CLI Class::Accessor::Grouped);
 use UNIVERSAL::require;
 
-our $VERSION    = '1.3';
+our $VERSION    = '1.41';
 our @COMPONENTS = qw(
 					Config
 					ErrorHandler
@@ -133,10 +133,9 @@ our @COMPONENTS = qw(
 					RunCommand
                   );
 
-__PACKAGE__->mk_classaccessor("_config"      => {});
-__PACKAGE__->mk_classaccessor("_components");
-__PACKAGE__->mk_classaccessor("_orig_argv");
-__PACKAGE__->mk_classaccessor("_plugins" => []);
+__PACKAGE__->mk_group_accessors(inherited => "_config", "_components", "_orig_argv", "_plugins");
+__PACKAGE__->_config({});
+__PACKAGE__->_plugins([]);
 
 =pod
 
@@ -167,6 +166,7 @@ sub dispatch {
 	$cmd->subcommand;
 	{
 		no strict "refs"; ## no critic
+		no warnings "uninitialized"; ## adhoc
 		my $pkg = ref($cmd);
 		# component and plugin set value
 		unshift @{"$pkg\::ISA"}, @{$class->_components};
@@ -177,37 +177,6 @@ sub dispatch {
 		$cmd->orig_argv($class->_orig_argv);
 	}
 	$cmd->run_command(@ARGV);
-}
-
-## I really does not want....
-sub error_cmd {
-	"Command not recognized, try $0 help.\n";
-}
-
-
-## I really does not want....
-sub get_cmd {
-
-	my ($class, $cmd, @arg) = @_;
-	if (!defined $cmd || $cmd !~ /^[a-z0-9_]+$/) {
-		die $class->error_cmd;
-	}
-	#die $class->error_cmd unless $cmd && $cmd =~ m/^[?a-z]+$/;
-	my $pkg = join('::', $class->command_class, $class->_cmd_map($cmd));
-	my $file = "$pkg.pm";
-	$file =~ s!::!/!g;
-	$pkg->require;
-
-	if (!$pkg->can("run")) {
-		if ($@ && exists $INC{$file}) {
-			warn $@;
-		}
-		die $class->error_cmd;
-	}
-
-	my $c = $pkg->new(@arg);
-	$c->app($class);
-	return $c;
 }
 
 
@@ -619,7 +588,7 @@ __END__
 
 =head1 SEE ALSO
 
-L<App::CLI> L<Class::Data::Accessor> L<UNIVERSAL::require>
+L<App::CLI> L<Class::Accessor::Grouped> L<UNIVERSAL::require>
 
 =head1 AUTHOR
 

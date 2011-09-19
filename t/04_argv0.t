@@ -10,7 +10,7 @@ our $RESULT;
 my $result = basename($0);
 
 {
-    local *ARGV = [ "argv0" ];
+    local *ARGV = [ "argv" ];
     MyApp->dispatch;
 }
 

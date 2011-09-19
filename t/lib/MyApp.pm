@@ -6,9 +6,9 @@ use constant alias => (
                 plugin      => "PluginTest",
                 config      => "ConfigTest",
                 stash       => "StashTest",
-                argv0       => "Argv0Test",
-                full_argv0  => "FullArgv0Test",
-                orig_argv   => "OrigArgvTest",
+                argv        => "ArgvTest",
+                fullargv   => "FullArgvTest",
+                origargv   => "OrigArgvTest",
                 cmdline     => "CmdlineTest"
             );
 

@@ -8,7 +8,7 @@ App::CLI::Extension::Component::InstallCallback - for App::CLI::Extension instal
 
 =head1 VERSION
 
-1.3
+1.41
 
 =head1 SYNOPSIS
   
@@ -73,10 +73,11 @@ App::CLI::Extension::Component::InstallCallback - for App::CLI::Extension instal
 =cut
 
 use strict;
-use base qw(Class::Data::Accessor);
+use base qw(Class::Accessor::Grouped);
 
-__PACKAGE__->mk_classaccessor( "_install_callback" => {} );
-our $VERSION  = '1.3';
+__PACKAGE__->mk_group_accessors( "inherited" => "_install_callback" );
+__PACKAGE__->_install_callback({});
+our $VERSION  = '1.41';
 
 sub new_callback {
 
@@ -121,7 +122,7 @@ __END__
 
 =head1 SEE ALSO
 
-L<App::CLI::Extension> L<Class::Data::Accessor>
+L<App::CLI::Extension> L<Class::Accessor::Grouped>
 
 =head1 AUTHOR
 

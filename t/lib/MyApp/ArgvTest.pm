@@ -1,4 +1,4 @@
-package MyApp::FullArgv0Test;
+package MyApp::ArgvTest;
 
 use strict;
 use base qw(App::CLI::Command);
@@ -6,7 +6,7 @@ use base qw(App::CLI::Command);
 sub run {
 
     my($self, @args) = @_;
-    $main::RESULT = $self->full_argv0;
+    $main::RESULT = $self->argv0;
 }
 1;
 
