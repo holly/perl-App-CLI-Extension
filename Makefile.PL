@@ -1,18 +1,17 @@
 use inc::Module::Install;
 name 'App-CLI-Extension';
-author 'Akira Horimoto';
 all_from 'lib/App/CLI/Extension.pm';
 
-build_requires 'Test::More';
-requires(
-      "App::CLI"                 => 0,
-      "Class::Accessor::Grouped" => 0,
-      "UNIVERSAL::require"       => 0,
-      "MRO::Compat"              => 0,
-      "Error"                    => 0,
-     );
-use_test_base;
+requires
+      "App::CLI"                 => '0.313',
+      "Class::Accessor::Grouped" => '0.1',
+      "UNIVERSAL::require"       => '0.13',
+      "MRO::Compat"              => '0.11',
+      "Error"                    => '0.17',
+     ;
 auto_set_repository;
-auto_includes;
-author_tests('xt');
+
+test_requires 'Test::More';
+tests 't/*.t';
+author_tests 'xt';
 WriteAll;

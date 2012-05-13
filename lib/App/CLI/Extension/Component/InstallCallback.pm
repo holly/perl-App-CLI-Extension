@@ -8,7 +8,7 @@ App::CLI::Extension::Component::InstallCallback - for App::CLI::Extension instal
 
 =head1 VERSION
 
-1.42
+1.421
 
 =head1 SYNOPSIS
   
@@ -77,7 +77,7 @@ use base qw(Class::Accessor::Grouped);
 
 __PACKAGE__->mk_group_accessors( "inherited" => "_install_callback" );
 __PACKAGE__->_install_callback({});
-our $VERSION  = '1.42';
+our $VERSION  = '1.421';
 
 sub new_callback {
 

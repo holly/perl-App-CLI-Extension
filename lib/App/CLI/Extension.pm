@@ -8,7 +8,7 @@ App::CLI::Extension - for App::CLI extension module
 
 =head1 VERSION
 
-1.42
+1.421
 
 =head1 SYNOPSIS
 
@@ -120,10 +120,12 @@ $self->e is the App::CLI::Extension::Exception or Error::Simple instance is set
 =cut
 
 use strict;
+use warnings;
 use base qw(App::CLI Class::Accessor::Grouped);
+use 5.008000;
 use UNIVERSAL::require;
 
-our $VERSION    = '1.42';
+our $VERSION    = '1.421';
 our @COMPONENTS = qw(
 					Config
 					ErrorHandler
