@@ -21,7 +21,7 @@ use Error qw(:try);
 use Readonly;
 use base qw(Class::Accessor::Grouped);
 
-Readonly our $FAIL_EXIT_VALUE = 255;
+Readonly our $FAIL_EXIT_VALUE => 255;
 our $VERSION         = '1.422';
 
 __PACKAGE__->mk_group_accessors(inherited => "e", "exit_value", "finished");
