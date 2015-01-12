@@ -13,6 +13,7 @@ App::CLI::Extension::Component::OriginalArgv - for App::CLI::Extension original 
 =cut
 
 use strict;
+use warnings;
 use base qw(Class::Accessor::Grouped);
 use FindBin qw($Bin $Script);
 use File::Spec;
@@ -26,13 +27,13 @@ __PACKAGE__->full_argv0(File::Spec->catfile($Bin, $Script));
 
 sub orig_argv {
 
-	my $self = shift;
+	my ($self, @args) = @_;
 
 	my @array;
-	if(scalar(@_) == 1 && ref($_[0]) eq "ARRAY"){
-		@array = @{$_[0]};
-	} elsif(scalar(@_) > 0) {
-		@array = @_;
+	if(scalar(@args) == 1 && ref($args[0]) eq "ARRAY"){
+		@array = @{$args[0]};
+	} elsif(scalar(@args) > 0) {
+		@array = @args;
 	}
 
 	if (scalar(@array) > 0) {
@@ -43,7 +44,7 @@ sub orig_argv {
 
 sub cmdline {
 
-	my $self    = shift;
+	my ($self)    = @_;
 	my $cmdline = join " ", $self->full_argv0, @{$self->orig_argv};
 	return $cmdline;
 }

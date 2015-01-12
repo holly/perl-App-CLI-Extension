@@ -13,6 +13,7 @@ App::CLI::Extension::Component::Stash - for App::CLI::Extension stash module
 =cut
 
 use strict;
+use warnings;
 use base qw(Class::Accessor::Grouped);
 
 our $VERSION  = '1.421';
@@ -23,17 +24,17 @@ __PACKAGE__->_stash({});
 
 sub stash {
 
-	my $self = shift;
+	my ($self, @args) = @_;
 
 	my %hash;
-	if(scalar(@_) == 1 && ref($_[0]) eq "HASH"){
-		%hash = %{$_[0]};
-	} elsif (scalar(@_) > 1) {
-		%hash = @_;
+	if(scalar(@args) == 1 && ref($args[0]) eq "HASH"){
+		%hash = %{$args[0]};
+	} elsif (scalar(@args) > 1) {
+		%hash = @args;
 	}
 	my @keys = keys %hash;
 	if (scalar(@keys) > 0) {
-		map { $self->_stash->{$_} = $hash{$_} } @keys;
+		$self->_stash->{$_} = $hash{$_} for @keys;
 	}
 	return $self->_stash;
 }

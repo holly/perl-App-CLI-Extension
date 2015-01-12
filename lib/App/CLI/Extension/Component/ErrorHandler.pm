@@ -13,6 +13,8 @@ App::CLI::Extension::Component::ErrorHandler - for App::CLI::Extension error mod
 =cut
 
 use strict;
+use warnings;
+
 use App::CLI::Extension::Exception;
 use Error;
 
@@ -21,7 +23,7 @@ our $VERSION  = '1.421';
 sub throw {
 
 	my($self, $message) = @_;
-	Error::throw App::CLI::Extension::Exception $message;
+	return Error::throw App::CLI::Extension::Exception $message;
 }
 
 1;
