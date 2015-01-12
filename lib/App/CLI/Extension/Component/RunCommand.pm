@@ -15,14 +15,15 @@ App::CLI::Extension::Component::RunCommand - for App::CLI::Command run_command o
 use strict;
 use warnings;
 
+use base qw(Class::Accessor::Grouped);
+
 use Carp qw/carp/;
 use MRO::Compat;
 use Error qw(:try);
 use Readonly;
-use base qw(Class::Accessor::Grouped);
 
 Readonly our $FAIL_EXIT_VALUE => 255;
-our $VERSION         = '1.422';
+our $VERSION                  = '1.422';
 
 __PACKAGE__->mk_group_accessors(inherited => "e", "exit_value", "finished");
 __PACKAGE__->exit_value(0);
@@ -36,7 +37,7 @@ sub run_command {
 	try {
 		$self->setup(@argv);
 		$self->prerun(@argv);
-		if ( ( $self->finished() // 0 ) == 0 ) {
+		if ( ( $self->finished() || 0 ) == 0 ) {
 			$self->run(@argv);
 			$self->postrun(@argv);
 		}
