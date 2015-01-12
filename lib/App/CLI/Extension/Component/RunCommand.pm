@@ -8,7 +8,7 @@ App::CLI::Extension::Component::RunCommand - for App::CLI::Command run_command o
 
 =head1 VERSION
 
-1.421
+1.422
 
 =cut
 
@@ -22,7 +22,7 @@ use Readonly;
 use base qw(Class::Accessor::Grouped);
 
 Readonly our $FAIL_EXIT_VALUE = 255;
-our $VERSION         = '1.421';
+our $VERSION         = '1.422';
 
 __PACKAGE__->mk_group_accessors(inherited => "e", "exit_value", "finished");
 __PACKAGE__->exit_value(0);

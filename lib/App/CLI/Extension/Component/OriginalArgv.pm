@@ -8,7 +8,7 @@ App::CLI::Extension::Component::OriginalArgv - for App::CLI::Extension original 
 
 =head1 VERSION
 
-1.421
+1.422
 
 =cut
 
@@ -18,7 +18,7 @@ use base qw(Class::Accessor::Grouped);
 use FindBin qw($Bin $Script);
 use File::Spec;
 
-our $VERSION  = '1.421';
+our $VERSION  = '1.422';
 
 __PACKAGE__->mk_group_accessors(inherited => "_orig_argv", "argv0", "full_argv0");
 __PACKAGE__->argv0($Script);

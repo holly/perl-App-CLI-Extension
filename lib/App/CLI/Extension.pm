@@ -8,7 +8,7 @@ App::CLI::Extension - for App::CLI extension module
 
 =head1 VERSION
 
-1.421
+1.422
 
 =head1 SYNOPSIS
 
