@@ -127,7 +127,7 @@ use UNIVERSAL::require;
 
 use Carp qw/croak/;
 
-our $VERSION    = '1.421';
+our $VERSION    = '1.422';
 our @COMPONENTS = qw(
 					Config
 					ErrorHandler
