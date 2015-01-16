@@ -1,4 +1,6 @@
 language: perl
+branches:
+  - master
 perl:
   - "5.20"
   - "5.18"
@@ -7,3 +9,5 @@ perl:
   - "5.12"
   - "5.10"
   - "5.8"
+before_install:
+  - cpanm -n Module::Install Module::Install::AuthorTests Module::Install::Repository
