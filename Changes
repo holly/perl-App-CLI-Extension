@@ -1,5 +1,9 @@
 Revision history for Perl extension App::CLI::Extension
 
+1.43  Mon Jan  5 21:46:00 EST 2015
+        - Hardened using perlcritic -3
+        - Improved to build with newer version of Module::Install
+        - Adding the use of Readonly(version 2) per PBP
 1.42  Mon Sep 19 16:08:26 JST 2011
         - update Makefile.PL
 1.41  Mon Sep 19 10:19:51 JST 2011

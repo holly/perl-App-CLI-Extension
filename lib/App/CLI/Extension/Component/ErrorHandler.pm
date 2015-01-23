@@ -8,20 +8,22 @@ App::CLI::Extension::Component::ErrorHandler - for App::CLI::Extension error mod
 
 =head1 VERSION
 
-1.421
+1.422
 
 =cut
 
 use strict;
+use warnings;
+
 use App::CLI::Extension::Exception;
 use Error;
 
-our $VERSION  = '1.421';
+our $VERSION  = '1.422';
 
 sub throw {
 
 	my($self, $message) = @_;
-	Error::throw App::CLI::Extension::Exception $message;
+	return Error::throw App::CLI::Extension::Exception $message;
 }
 
 1;

@@ -8,23 +8,25 @@ App::CLI::Extension::Exception - for App::CLI exception module
 
 =head1 VERSION
 
-1.421
+1.422
 
 =cut
 
 use strict;
+use warnings;
+
 use base qw(Error::Simple);
 
-our $VERSION = '1.421';
+our $VERSION = '1.422';
 
 sub new {
 
 	my($class, $message) = @_;
 	chomp $message;
 
-	#local $Error::Depth = $Error::Depth + 1;
-	local $Error::Depth = $Error::Depth + 2;
-	local $Error::Debug = 1;
+	local $Error::Depth = $Error::Depth + 2; ## no critic (ProhibitPackageVars)
+	local $Error::Debug = 1; ## no critic (ProhibitPackageVars)
+
 	my $self = $class->SUPER::new($message);
 
 	return $self;

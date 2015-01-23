@@ -8,7 +8,7 @@ App::CLI::Extension - for App::CLI extension module
 
 =head1 VERSION
 
-1.421
+1.422
 
 =head1 SYNOPSIS
 
@@ -125,7 +125,9 @@ use base qw(App::CLI Class::Accessor::Grouped);
 use 5.008000;
 use UNIVERSAL::require;
 
-our $VERSION    = '1.421';
+use Carp qw/croak/;
+
+our $VERSION    = '1.422';
 our @COMPONENTS = qw(
 					Config
 					ErrorHandler
@@ -143,42 +145,73 @@ __PACKAGE__->_plugins([]);
 
 =head1 METHOD
 
+=head2 import()
+
+This is automatically called by Perl, but still bears mentioning.
+
+Here we load all of the components for our module into memory and register them into our own namespace.
+
+=head3 Possible Room for Improvement
+
+=over 4
+
+=item Use Module::Load to load modules instead of C<require()> followed by C<import()>.
+
+=back
+
+This method takes no parameters and has no returns.
+
 =cut
 
 sub import {
 
-	my $class = shift;
+	my ($class) = @_;
+
 	my @loaded_components;
 	foreach my $component (@COMPONENTS) {
 		$component = sprintf "%s::Component::%s", __PACKAGE__, $component;
-		$component->require or die "load component error: $UNIVERSAL::require::ERROR";
+		$component->require or croak "load component error: $UNIVERSAL::require::ERROR";
 		$component->import;
 		push @loaded_components, $component;
-    }
+  }
 	$class->_components(\@loaded_components);
+
+  return;
 }
+
+=head2 dispatch()
+
+Start the dispatch chain, passing any arguments along.
+
+This method takes a list of arguments to C<prepare()> and returns
+the result of C<run_command(@ARGV)>.
+
+This should be called as a class method.
+
+=cut
 
 sub dispatch {
 
-	my $class = shift;
+	my ($class, @dispatch_arguments) = @_;
+
 	# save original argv
 	my @argv = @ARGV;
 	$class->_orig_argv(\@argv);
-	my $cmd = $class->prepare(@_);
+	my $cmd = $class->prepare(@dispatch_arguments);
 	$cmd->subcommand;
 	{
-		no strict "refs"; ## no critic
-		no warnings "uninitialized"; ## adhoc
+		no strict "refs"; ## no critic (strict)
+		no warnings "uninitialized"; ## no critic (warnings)
 		my $pkg = ref($cmd);
 		# component and plugin set value
-		unshift @{"$pkg\::ISA"}, @{$class->_components};
+		unshift @{"${pkg}::ISA"}, @{$class->_components};
 		if (scalar(@{$class->_plugins}) != 0) {
-			unshift @{"$pkg\::ISA"}, @{$class->_plugins};
+			unshift @{"${pkg}::ISA"}, @{$class->_plugins};
 		}
 		$cmd->config($class->_config);
 		$cmd->orig_argv($class->_orig_argv);
 	}
-	$cmd->run_command(@ARGV);
+	return $cmd->run_command(@ARGV);
 }
 
 
@@ -238,17 +271,17 @@ sub load_plugins {
 	my @loaded_plugins = @{$class->_plugins};
 	foreach my $plugin(@load_plugins){
 
-		if ($plugin =~ /^\+/) {
-			$plugin =~ s/^\+//;
+		if ($plugin =~ /^\+/x) {
+			$plugin =~ s/^\+//x;
 		} else {
 			$plugin = "App::CLI::Plugin::$plugin";
 		}
-		$plugin->require or die "plugin load error: $UNIVERSAL::require::ERROR";
+		$plugin->require or croak "plugin load error: $UNIVERSAL::require::ERROR";
 		$plugin->import;
 		push @loaded_plugins, $plugin;
 	}
 
-	$class->_plugins(\@loaded_plugins);
+	return $class->_plugins(\@loaded_plugins);
 }
 
 =pod
@@ -576,7 +609,7 @@ App::CLI::Extension::Exception or Error::Simple instance. There is a ready to us
 
 =head2 finish
 
-program last phase. By default, the exit will be executed automatically, exit if you do not want the APPCLI_NON_EXIT environ valiable how do I set the (value is whatever)
+program last phase. By default, the exit will be executed automatically, exit if you do not want the APPCLI_NON_EXIT environment valiable how do I set the (value is whatever)
 
 =head2 fail
 

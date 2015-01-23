@@ -8,17 +8,22 @@ App::CLI::Extension::Component::RunCommand - for App::CLI::Command run_command o
 
 =head1 VERSION
 
-1.421
+1.422
 
 =cut
 
 use strict;
-use MRO::Compat;
-use Error qw(:try);
+use warnings;
+
 use base qw(Class::Accessor::Grouped);
 
-our $FAIL_EXIT_VALUE = 255;
-our $VERSION         = '1.421';
+use Carp qw/carp/;
+use MRO::Compat;
+use Error qw(:try);
+use Readonly;
+
+Readonly our $FAIL_EXIT_VALUE => 255;
+our $VERSION                  = '1.422';
 
 __PACKAGE__->mk_group_accessors(inherited => "e", "exit_value", "finished");
 __PACKAGE__->exit_value(0);
@@ -32,7 +37,7 @@ sub run_command {
 	try {
 		$self->setup(@argv);
 		$self->prerun(@argv);
-		if ($self->finished == 0) {
+		if ( ( $self->finished() || 0 ) == 0 ) {
 			$self->run(@argv);
 			$self->postrun(@argv);
 		}
@@ -54,12 +59,14 @@ sub run_command {
 	};
 
 	if (exists $ENV{APPCLI_NON_EXIT}) {
-		no strict "refs";  ## no critic
+		no strict "refs";  ## no critic (strict)
 		my $dispatch_pkg = $self->app;
 		${"$dispatch_pkg\::EXIT_VALUE"} = $self->exit_value;
 	} else {
 		exit $self->exit_value;
 	}
+
+	return;
 }
 
 #######################################
@@ -70,36 +77,36 @@ sub setup {
 
 	my($self, @argv) = @_;
 	# something to do
-	$self->maybe::next::method(@argv);
+	return $self->maybe::next::method(@argv);
 }
 
 sub prerun {
 
 	my($self, @argv) = @_;
 	# something to do
-	$self->maybe::next::method(@argv);
+	return $self->maybe::next::method(@argv);
 }
 
 sub finish {
 
 	my($self, @argv) = @_;
 	# something to do
-	$self->maybe::next::method(@argv);
+	return $self->maybe::next::method(@argv);
 }
 
 sub postrun {
 
 	my($self, @argv) = @_;
 	# something to do
-	$self->maybe::next::method(@argv);
+	return $self->maybe::next::method(@argv);
 }
 
 sub fail {
 
 	my($self, @argv) = @_;
 	chomp(my $message = $self->e->stringify);
-	warn sprintf("default fail method. error message:%s. override fail method!!\n", $message);
-	$self->maybe::next::method(@argv);
+	carp "default fail method. error message:${message}. override fail method!!\n";
+	return $self->maybe::next::method(@argv);
 }
 
 1;
@@ -108,7 +115,7 @@ __END__
 
 =head1 SEE ALSO
 
-L<App::CLI::Extension> L<Error> L<MRO::Compat>
+L<App::CLI::Extension|App::CLI::Extension> L<Error|Error> L<MRO::Compat|MRO::Compat>
 
 =head1 AUTHOR
 

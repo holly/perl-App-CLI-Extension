@@ -8,7 +8,7 @@ App::CLI::Extension::Component::InstallCallback - for App::CLI::Extension instal
 
 =head1 VERSION
 
-1.421
+1.422
 
 =head1 SYNOPSIS
   
@@ -26,21 +26,28 @@ App::CLI::Extension::Component::InstallCallback - for App::CLI::Extension instal
   use constants options => ("runmode=s" => "runmode");
    
   sub prerun {
-  
-      my($self, @argv) = @_;
-	  $self->new_callback("view", sub {
-                                   my($self, @args) = @_;
-								   # anything view to do...
-                                   foreach $list (@{$self->anything_all_list}) {
-                                       printf "%d: %s\n", $list->id, $list->name;
-								   }
-                               });
-	  $self->new_callback("exec", sub {
-                                   my($self, @args) = @_;
-								   # anything execute to do...
-								   $self->anything_execute(@args);
-                               });
-      $self->>maybe::next::method(@argv);
+    my($self, @argv) = @_;
+
+    $self->new_callback(
+      "view",
+      sub {
+        my($self, @args) = @_;
+        # anything view to do...
+        foreach $list (@{$self->anything_all_list}) {
+          printf "%d: %s\n", $list->id, $list->name;
+        }
+      }
+    );
+
+    $self->new_callback(
+      "exec",
+      sub {
+        my($self, @args) = @_;
+        # anything execute to do...
+        $self->anything_execute(@args);
+      }
+    );
+    $self->>maybe::next::method(@argv);
   }
   
   sub run {
@@ -51,7 +58,7 @@ App::CLI::Extension::Component::InstallCallback - for App::CLI::Extension instal
           $self->exec_callback($runmode, @args);
       } else {
           die "invalid runmode!!";
-	  }
+      }
   }
   
   # myapp
@@ -73,41 +80,51 @@ App::CLI::Extension::Component::InstallCallback - for App::CLI::Extension instal
 =cut
 
 use strict;
+use warnings;
+
+use Carp qw/croak/;
+
 use base qw(Class::Accessor::Grouped);
 
 __PACKAGE__->mk_group_accessors( "inherited" => "_install_callback" );
 __PACKAGE__->_install_callback({});
-our $VERSION  = '1.421';
+our $VERSION  = '1.422';
 
 sub new_callback {
 
 	my($self, $install, $callback) = @_;
 	if ($self->exists_callback($install)) {
-		die "already exists $install";
+		croak "already exists $install";
 	}
 	$self->_install_callback->{$install} = [];
 	$self->add_callback($install, $callback) if defined $callback;
+
+  return;
 }
 
 sub add_callback {
 
 	my($self, $install, $callback) = @_;
 	if (!$self->exists_callback($install)) {
-		die "non install callback: $install";
+		croak "non install callback: $install";
 	}
 	if(ref($callback) ne "CODE") {
-		die "\$callback is not CODE";
+		croak "\$callback is not CODE";
 	}
-    push @{$self->_install_callback->{$install}}, $callback;
+  push @{$self->_install_callback->{$install}}, $callback;
+
+  return;
 }
 
 sub exec_callback {
 
 	my($self, $install, @args) = @_;
 	if (!$self->exists_callback($install)) {
-		die "non install callback: $install";
+		croak "non install callback: $install";
 	}
 	map { $self->$_(@args) } @{$self->_install_callback->{$install}};
+
+  return;
 }
 
 sub exists_callback {
